@@ -12,12 +12,15 @@ class Book < Product
     "Книга - «#{@title}», #{@genre}, автор — #{@author}, #{super}"
   end
 
-  def from_file(file_name)
+  def self.from_file(file_name)
     lines = File.readlines(file_name)
     @title = lines[0]
     @genre = lines[1]
     @author = lines[2]
     @price = lines[3]
     @left = lines[4]
+
+    # это для collection
+    lines.to_s
   end
 end

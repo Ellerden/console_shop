@@ -1,23 +1,31 @@
+require_relative "product.rb"
+require_relative "book.rb"
+require_relative "film.rb"
+
 class ProductCollection
   attr_accessor :products
 
   def initialize(path)
    @path = path
    @products = []
+   from_dir
   end
 
 #считывает продукты из папки data, сам понимая, какие товары в какой папке лежат.
   def from_dir
     @products = []
-
     case @path
-      when "films" then from_class = "Film"
-      when "books" then from_class = "Book"
+      when "films"
+        Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << Film.from_file(file_name) }
+      when "books"
+        Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << Book.from_file(file_name) }
+
     end
 
-    Dir["/lib/"+ @path + '/*.txt'].each do |file_name|
-      products << from_class.from_file(file_name)
-    end
+
+
+    # Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << from_class.from_file(file_name)}
+
   end
 
 # возвращает массив товаров.
