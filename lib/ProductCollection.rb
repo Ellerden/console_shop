@@ -14,18 +14,15 @@ class ProductCollection
 #считывает продукты из папки data, сам понимая, какие товары в какой папке лежат.
   def from_dir
     @products = []
-    case @path
-      when "films"
-        Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << Film.from_file(file_name) }
-      when "books"
-        Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << Book.from_file(file_name) }
 
+    case @path
+      when "films" then class_from = Object.const_get("Film")
+      when "books" then class_from = Object.const_get("Book")
+      when "cds" then class_from = Object.const_get("Cd")
     end
 
-
-
-    # Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << from_class.from_file(file_name)}
-
+    # добавляем содерживое каждого файла в нужной папке в @products
+    Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << class_from.from_file(file_name) }
   end
 
 # возвращает массив товаров.
