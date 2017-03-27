@@ -7,6 +7,8 @@ class Cd < Product
     @artist = params[:artist]
     @genre = params[:genre]
     @year = params[:year]
+
+    to_s
   end
 
   def to_s
@@ -15,13 +17,7 @@ class Cd < Product
 
   def self.from_file(file_name)
     lines = File.readlines(file_name).map { |i| i.chomp }
-    @title = lines[0]
-    @artist = lines[1]
-    @genre = lines[2]
-    @year = lines[3]
-    @price = lines[4]
-    @left = lines[5]
-    # это для collection можно и через self.new но я пока не разобралась как это работает
-    lines.to_s
+    self.new(title: lines[0], artist: lines[1], genre: lines[2], year: lines[3], price: lines[4], amount: lines[5])
   end
 end
+

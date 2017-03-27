@@ -1,31 +1,38 @@
 require_relative "product.rb"
 require_relative "book.rb"
 require_relative "film.rb"
+require_relative "cd.rb"
 
 class ProductCollection
   attr_accessor :products
 
-  def initialize(path)
-   @path = path
-   @products = []
-   from_dir
+  def initialize(products)
+    @products = products
   end
 
 #считывает продукты из папки data, сам понимая, какие товары в какой папке лежат.
-  def from_dir
-    @products = []
+  def self.from_dir(path)
+    items = []
 
-    case @path
-      when "films" then class_from = Object.const_get("Film")
-      when "books" then class_from = Object.const_get("Book")
-      when "cds" then class_from = Object.const_get("Cd")
-    end
+    Dir.glob(path + '*/**').each do |fn|
 
-    # добавляем содерживое каждого файла в нужной папке в @products
-    Dir["data/"+ @path + "/*.txt"].each { |file_name| @products << class_from.from_file(file_name) }
+      #   получаем имя папки-уникальной категории продуктов (Films, Books, Cds)
+      class_path = fn.to_s.split("/").last
+
+      case class_path
+        when "books" then class_name = Object.const_get("Book")
+        when "films" then class_name = Object.const_get("Film")
+        when "cds" then class_name = Object.const_get("Cd")
+      end
+
+      # Получаем продукты по каждой категории и добавляем их в общий массив
+      Dir[fn + "/*.txt"].each { |file_name| items << class_name.from_file(file_name) }
+      end
+
+    self.new(items)
   end
 
-# возвращает массив товаров.
+  # возвращает массив товаров.
   def to_a
     @products
   end
@@ -43,6 +50,7 @@ class ProductCollection
       end
 
     @products.reverse! if params[:order] == :asc
+    self
   end
 end
 
